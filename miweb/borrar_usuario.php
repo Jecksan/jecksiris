@@ -1,26 +1,25 @@
 <?php
+$conn = new mysqli("localhost", "root", "", "registro");
 
-$conexion = new mysqli("localhost", "root", "", "registro");
-
-if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
-}
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $id = intval($_POST["id"]); // Convertir a número por seguridad
-
-    
-    $sql = "DELETE FROM usuarios WHERE id = $id";
-
-    if ($conexion->query($sql) === TRUE) {
-        
-        echo "<script>
-                alert('Usuario eliminado correctamente');
-                window.location.href='mostrar_usuarios.php';
-              </script>";
-    } else {
-        echo "Error al eliminar el usuario: " . $conexion->error;
-    }
+if ($conn->connect_error) {
+  die("Error de conexión: " . $conn->connect_error);
 }
 
-$conexion->close();
+$id = $_GET['id'] ?? 0;
+$id = intval($id);
+
+if ($id > 0) {
+  
+  $sql = "DELETE FROM usuarios WHERE id = $id";
+  if ($conn->query($sql) === TRUE) {
+    echo "<h2>🗑️ Usuario eliminado correctamente.</h2>";
+    echo "<a href='mostrar_usuarios.php'>Volver a la lista</a>";
+  } else {
+    echo "Error al eliminar: " . $conn->error;
+  }
+} else {
+  echo "ID no válido.";
+}
+
+$conn->close();
 ?>
